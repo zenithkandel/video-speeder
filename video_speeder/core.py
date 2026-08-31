@@ -205,6 +205,7 @@ class VideoSpeeder:
         cmd = [
             self.ffmpeg_path,
             "-hide_banner",
+            "-nostdin",
             "-y" if config.overwrite else "-n",
             "-i", str(input_path.resolve()),
             "-filter:v", vf_string,
@@ -258,7 +259,7 @@ class VideoSpeeder:
             cmd.extend(config.extra_ffmpeg_args)
 
         # Progress reporting flag
-        cmd.extend(["-progress", "pipe:1", "-nostats"])
+        cmd.extend(["-progress", "pipe:1", "-nostats", "-loglevel", "error"])
 
         # Target output file
         cmd.append(str(output_path.resolve()))
@@ -278,6 +279,8 @@ class VideoSpeeder:
         progress_callback signature:
             callback(percentage: float, processed_seconds: float, fps: float)
         """
+        import threading
+
         input_file = Path(input_path).resolve()
         output_file = Path(output_path).resolve()
 
@@ -328,6 +331,17 @@ class VideoSpeeder:
                 universal_newlines=True,
             )
 
+            # Continuously drain stderr in background thread to avoid pipe deadlocks
+            def drain_stderr():
+                if proc.stderr:
+                    for err_line in proc.stderr:
+                        clean_line = err_line.strip()
+                        if clean_line:
+                            error_lines.append(clean_line)
+
+            stderr_thread = threading.Thread(target=drain_stderr, daemon=True)
+            stderr_thread.start()
+
             current_out_time_us = 0.0
             current_fps = 0.0
 
@@ -346,7 +360,6 @@ class VideoSpeeder:
                             pass
                     elif line.startswith("out_time_ms="):
                         try:
-                            # ffmpeg in some versions sends microsecond timestamps in out_time_ms
                             ms = float(line.split("=")[1])
                             current_out_time_us = ms
                         except (ValueError, IndexError):
@@ -365,10 +378,8 @@ class VideoSpeeder:
                         if progress_callback:
                             progress_callback(pct, processed_sec, current_fps)
 
-            # Wait for completion
-            _, stderr_data = proc.communicate()
-            if stderr_data:
-                error_lines.extend(stderr_data.splitlines()[-10:])
+            proc.wait()
+            stderr_thread.join(timeout=2.0)
 
             elapsed_time = time.time() - start_time
 

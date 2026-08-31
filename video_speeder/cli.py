@@ -1,12 +1,18 @@
-"""
-Interactive and non-interactive command-line interface powered by Rich.
-"""
-
 import argparse
 import sys
 import time
 from pathlib import Path
 from typing import List, Optional
+
+# Enforce UTF-8 output on Windows consoles to prevent cp1252 charmap encoding errors
+if sys.platform == "win32":
+    try:
+        if sys.stdout and hasattr(sys.stdout, "reconfigure"):
+            sys.stdout.reconfigure(encoding="utf-8")
+        if sys.stderr and hasattr(sys.stderr, "reconfigure"):
+            sys.stderr.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
 
 from rich.console import Console
 from rich.panel import Panel
