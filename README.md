@@ -8,8 +8,8 @@
 ## 🌟 Highlights
 
 - **100% Offline & Local**: Zero cloud dependencies or subscriptions. All processing is powered natively by FFmpeg on your local machine.
-- **Arbitrary Speed Multipliers**: Scale video playback speeds smoothly from slow-motion (`0.25x`, `0.5x`) to ultra-fast (`1.5x`, `2.0x`, `4.0x`, `8.0x`+).
-- **Intelligent Audio Tempo Synchronization**: Automatically chains FFmpeg `atempo` filtergraphs to preserve natural audio pitch regardless of multiplier boundaries.
+- **Extreme Speed Multipliers (0.01x to 10,000x)**: Smoothly handles everything from ultra slow-motion (`0.25x`, `0.5x`) to standard speedups (`1.5x`, `2.0x`, `4.0x`) and extreme timelapse speeds (`50x`, `200x`, `500x`, `1000x`+).
+- **Intelligent Audio Tempo Synchronization**: Automatically decomposes and chains optimal FFmpeg `atempo` filtergraphs (e.g., $200\times \rightarrow 8$ chained filters) to preserve pitch without crashing.
 - **Rich Terminal User Interface**: Interactive setup wizard, real-time encoding progress, live per-file status bars, and formatted batch summary reports.
 - **High-Throughput Multithreading**: Process entire video folders in parallel utilizing multi-core worker threads.
 - **Hardware Acceleration Ready**: Seamlessly toggle NVIDIA NVENC (`--hwaccel nvenc`), Intel QuickSync (`--hwaccel qsv`), or AMD AMF (`--hwaccel amf`).
