@@ -36,6 +36,10 @@ class TestUtils(unittest.TestCase):
         f8 = build_atempo_filter(8.0)
         self.assertEqual(f8, "atempo=2,atempo=2,atempo=2")
 
+        # 200.0x extreme speed (2^7 * 1.5625 = 200)
+        f200 = build_atempo_filter(200.0)
+        self.assertEqual(f200, "atempo=2,atempo=2,atempo=2,atempo=2,atempo=2,atempo=2,atempo=2,atempo=1.5625")
+
     def test_build_atempo_filter_slow_motion(self):
         # 0.5x -> atempo=0.5
         self.assertEqual(build_atempo_filter(0.5), "atempo=0.5")

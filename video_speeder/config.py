@@ -55,9 +55,9 @@ AVAILABLE_CODECS = [
 ATEMPO_MIN = 0.5
 ATEMPO_MAX = 2.0
 
-# Speed multiplier valid range
-MIN_SPEED_MULTIPLIER = 0.05
-MAX_SPEED_MULTIPLIER = 100.0
+# Speed multiplier valid range (from extreme slow-mo 0.01x to extreme timelapse 10,000x)
+MIN_SPEED_MULTIPLIER = 0.01
+MAX_SPEED_MULTIPLIER = 10000.0
 
 # Terminal UI configuration
 APP_NAME = "Video Speeder CLI"
